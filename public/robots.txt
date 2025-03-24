@@ -1,6 +1,0 @@
-User-agent: *
-Disallow: /dashboard/
-Disallow: /login
-Disallow: /forgot-pass
-Disallow: /register
-Disallow: /change-password

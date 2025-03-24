@@ -1,9 +1,0 @@
-User-agent: *
-
-# black-listed-bot
-User-agent: black-listed-bot
-Disallow: /dashboard
-Disallow: /login
-Disallow: /register
-Disallow: /forgot-pass
-Disallow: /change-password
