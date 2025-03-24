@@ -1,0 +1,15 @@
+User-agent: *
+
+# black-listed-bot
+User-agent: black-listed-bot
+Disallow: /dashboard
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-pass
+Disallow: /change-password
+
+# Host
+Host: https://aithietke.com/
+
+# Sitemaps
+Sitemap: https://aithietke.com/sitemap-0.xml # Index sitemap

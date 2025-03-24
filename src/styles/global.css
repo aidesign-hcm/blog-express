@@ -1,0 +1,263 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@font-face {
+  font-display: swap;
+}
+:root {
+  --primary: #923A3C;
+}
+html, body {
+  touch-action: manipulation;
+}
+.content-wrapper a {
+  color: var(--primary)
+}
+.content-wrapper img{
+  margin: 10px 0px
+}
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+  font-size: 1rem;
+}
+.container {
+  max-width: 1280px;
+}
+.main-section{
+  max-width: 1130px;
+}
+.menu li  summary:hover,
+.menu li a:hover{
+  border-radius: 5px;
+  color: var(--primary);
+  background: none
+}
+.ais-Hits.ais-Hits--empty{
+  display: none
+}
+.ais-SearchBox-input[type="search"] {
+  width: 100%;
+  background: #f5f6f7;
+  border: 0px;
+  box-shadow: 0 0 0 0 #b5b5b5 inset;
+  border-radius: 30px;
+  padding: 10px 15px;
+  max-height: 36px;
+  padding-left: 3em;
+}
+.ais-SearchBox-form {
+  position: relative;
+}
+.ais-SearchBox-submit {
+  position: absolute;
+  left: 0.5em;
+  top: 0.25em;
+  font-size: 30px;
+}
+.menu-search .ais-Hits {
+  position: absolute;
+  z-index: 9;
+  width: 100%;
+}
+.ais-Hits-list {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+/* dia (min-width: 1024px) {
+  .menu-search .ais-Hits-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .ais-Hits-list {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+} */
+
+.ais-Hits-item .card-blog {
+  padding: 0px;
+}
+.ais-Hits-item {
+  display: block;
+}
+.ais-SearchBox-submit svg {
+  font-size: 68px;
+  width: 20px;
+  height: 20px;
+}
+.ais-Hits {
+  background: #fff;
+  display: block;
+  padding: 1em;
+  box-shadow: 0px 0px 1px 0px #5d6b842e, 0px 2px 2px 0px #5d6b8426,
+    0px 4px 3px 0px #5d6b8417, 0px 8px 3px 0px #5d6b8408;
+  border-radius: 10px;
+  position: relative;
+  margin-top: 10px;
+}
+
+.ais-SearchBox-loadingIndicator,
+.ais-SearchBox-reset {
+  position: absolute;
+  right: 1em;
+  top: 0.7em;
+}
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}
+.list-post:before {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  content: "";
+  background: #ababab;
+  position: absolute;
+  top: 8px;
+  left: -15px;
+}
+.sidebar .short-text {
+  display: none
+}
+/* Global Styles */
+.is-active {
+  background: black;
+  color: #fff;
+}
+.ProseMirror:focus {
+  outline: none;
+}
+.ProseMirror > * + * {
+  margin-top: 0.75em;
+}
+.ProseMirror ul,
+.ProseMirror ol {
+  padding: 0 1rem;
+}
+.ProseMirror ul {
+  list-style-type: disc;
+}
+.ProseMirror ol {
+  list-style-type: decimal;
+}
+.ProseMirror h1,
+.ProseMirror h2,
+.ProseMirror h3,
+.ProseMirror h4 {
+  line-height: 1.1;
+  font-weight: 600;
+}
+.ProseMirror h1 {
+  font-size: 2em;
+}
+.ProseMirror h2 {
+  font-size: 1.6em;
+}
+.ProseMirror h3 {
+  font-size: 1.4em;
+}
+.ProseMirror h4 {
+  font-size: 1.2em;
+}
+.ProseMirror code {
+  background-color: rgba(97, 97, 97, 0.1);
+  color: #616161;
+}
+.ProseMirror a {
+  color: #076db6;
+  text-decoration: underline;
+  text-underline-position: under;
+}
+.ProseMirror pre {
+  background: #0d0d0d;
+  color: #fff;
+  font-family: 'JetBrainsMono', monospace;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+}
+.ProseMirror pre code {
+  color: inherit;
+  padding: 0;
+  background: none;
+  font-size: 0.8rem;
+}
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+}
+.ProseMirror blockquote {
+  padding-left: 1rem;
+  border-left: 2px solid rgba(13, 13, 13, 0.1);
+}
+.ProseMirror hr {
+  border: none;
+  border-top: 2px solid rgba(13, 13, 13, 0.1);
+  margin: 2rem 0;
+}
+.tiptap.ProseMirror{
+  min-height: 15em
+}
+.bubble-menu {
+  display: flex;
+  background-color: #0d0d0d;
+  padding: 0.2rem;
+  border-radius: 0.5rem;
+}
+.bubble-menu span {
+  border: none;
+  background: none;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0 0.2rem;
+  opacity: 0.6;
+}
+.bubble-menu span:hover,
+.bubble-menu span.is-active {
+  opacity: 1;
+}
+.tiptap-block .toolbar span {
+  display: inline-block;
+  padding: 0.25rem 0.5rem; /* Adjust as needed */
+  border: 1px solid #ddd; /* Light border color */
+  border-radius: 0.375rem; /* Rounded corners */
+  font-size: 0.875rem; /* Small font size */
+  font-weight: 600; /* Bold weight */
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  background-color: transparent;
+  color: #333; /* Dark text color */
+  border-color: #333; /* Dark border */
+  padding: 0.125rem 0.25rem; /* Smaller padding */
+  font-size: 0.75rem; /* Extra small font size */
+  text-transform: none; 
+  margin: 0 .25em
+}
+.tiptap-block .toolbar span:hover {
+  background-color: rgba(0, 0, 0, 0.1); /* Light hover background */
+  border-color: #333; 
+}
+.first-block{
+background :#fcfaf6
+}
+
+
+.app {
+  height: 100%;
+}
+
+.treeRoot {
+  box-sizing: border-box;
+  height: 100%;
+  padding: 32px;
+}
+
+.draggingSource {
+  opacity: 0.3;
+}
+
+.placeholderContainer {
+  position: relative;
+}
