@@ -15,7 +15,7 @@ export default function Logout() {
       title: "Tin Tức",
       href: "/dashboard/secret/blog",
       children: [
-        { title: "Quản Lý Tin Tức", href: "/dashboard/secret/blog" },
+        { title: "Tin Tức", href: "/dashboard/secret/blog" },
         { title: "Thêm Tin Tức", href: "/dashboard/secret/blog/add" },
       ],
     },
@@ -53,12 +53,12 @@ export default function Logout() {
     { title: "Tài khoản", href: "/dashboard" },
     { title: "Chỉnh sửa thông tin", href: "/dashboard/account" },
   ];
-  const managerMenu = [
+  const userMenu = [
     {
       title: "Tin Tức",
       href: "/dashboard/account/blog",
       children: [
-        { title: "Quản Lý Tin Tức", href: "/dashboard/account/blog" },
+        { title: "Tin Tức", href: "/dashboard/account/blog" },
         { title: "Thêm Tin Tức", href: "/dashboard/account/blog/add" },
       ],
     },
@@ -67,6 +67,10 @@ export default function Logout() {
     {
       title: "Cài đặt",
       href: "/dashboard/manager/setting",
+    },
+    {
+      title: "Quản lý tin tức",
+      href: "/dashboard/manager/blog",
     },
   ];
   return (
@@ -124,7 +128,7 @@ export default function Logout() {
               ))}
               {hasPermission("user") &&  (
                 <>
-                  {managerMenu.map((item) => (
+                  {userMenu.map((item) => (
                     <li key={item.href}>
                       <Link href={item.href}>{item.title}</Link>
                       {item.children && item.children.length > 0 && (

@@ -38,10 +38,10 @@ const LoginForm = () => {
     },
   });
   async function onSubmit(values: LoginBodyType) {
-    // if (!captchaValue) {
-    //   toast.error("Vui lòng xác nhận reCAPTCHA!"); // Error message in Vietnamese
-    //   return;
-    // }
+    if (!captchaValue) {
+      toast.error("Vui lòng xác nhận reCAPTCHA!"); // Error message in Vietnamese
+      return;
+    }
 
     if (loading) return;
     setLoading(true);

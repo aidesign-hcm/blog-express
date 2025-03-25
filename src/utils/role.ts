@@ -3,8 +3,8 @@ type Role = "admin" | "editor" | "manager" | "user";
 // Role hierarchy for permission checking
 const roleHierarchy: Record<Role, Role[]> = {
   admin: ["admin", "editor", "manager", "user"],
-  editor: ["editor", "manager", "user"],
-  manager: ["manager", "user"],
+  editor: ["editor", "user"],
+  manager: ["manager","editor", "user"],
   user: ["user"],
 };
 

@@ -31,6 +31,7 @@ type AddFormProps = {
 
 const AddForm = ({ blog, onSubmit }: AddFormProps) => {
   const [categories, setCategories] = useState([]);
+  const [isCode, setIsCode] = useState(false);
   const [loading, setLoading] = useState(false);
   const form = useForm<BlogValues>({
     resolver: zodResolver(BlogUserCreate.element),
@@ -86,8 +87,10 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
     if (loading) return;
     setLoading(true);
     try {
+      console.log(imageFile);
       const data = new FormData();
       data.append("imageFile", imageFile);
+      console.log(data);
       const sessionToken = localStorage.getItem("sessionToken") || "";
       const result = await mediaApiRequest.postMedia(data, sessionToken);
       if (result) {
@@ -181,10 +184,46 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
               />
               <div className="my-4">
                 <FormLabel>Nội Dung</FormLabel>
-                <TiptapEditor
-                  value={content} // Pass the form's `content` value
-                  onChange={(newContent) => setValue("desc", newContent)} // Update `content` in the form
+                {/* Tab Switcher */}
+                <div role="tablist" className="flex gap-2 my-2">
+                  <span
+                    role="tab"
+                    className={`tab ${!isCode ? "border rounded-md border-gray-500" : ""}`}
+                    onClick={() => setIsCode(false)}
+                  >
+                    Soạn Thảo Thường
+                  </span>
+                  <span
+                    role="tab"
+                    className={`tab ${isCode ? "border rounded-md border-gray-500" : ""}`}
+                    onClick={() => setIsCode(true)}
+                  >
+                    Soạn HTML {isCode }
+                  </span>
+                </div>
+                {!isCode ? (
+                  <TiptapEditor
+                    value={content}
+                    onChange={(newContent) => setValue("desc", newContent)}
+                  />
+                ) : (
+                  <FormField
+                  control={form.control}
+                  name="desc"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <textarea
+                          {...field}
+                          rows={15}
+                          className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
+                )}
               </div>
               <FormField
                 control={form.control}

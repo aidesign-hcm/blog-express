@@ -11,41 +11,48 @@ import { toast } from "react-toastify";
 import envConfig from "@/config";
 import { useRouter } from "next/navigation";
 import Pagination from "@/components/widget/Pagination";
-import { BlogCreateType } from "@/schemaValidations/blog.schema";
 
 interface BlogTableProps {
   initialBlogs: any[];
   initialTotal: number;
   perPage: number;
+  rule: string;
 }
 
-export default function BlogTable() {
+export default function BlogTable({ rule }: BlogTableProps) {
   const [blogs, setBlogs] = useState([]);
   const [page, setPage] = useState(1);
   const perPage = 20;
   const [totalPages, setTotalPages] = useState(1);
   useEffect(() => {
-    console.log("Fetching blogs for page:", page);
+    console.log("Fetching blogs for page:", page, "with rule:", rule);
+
     const fetchBlogs = async () => {
       const data = { page, perPage };
+
       try {
         const sessionToken = localStorage.getItem("sessionToken") || "";
-        const resBlogs = await blogApiRequest.fetchBlogByUser(data, sessionToken) ;
+        let resBlogs = null;
+
+        if (rule === "user") {
+          resBlogs = await blogApiRequest.fetchBlogByUser(data, sessionToken);
+        } else if (rule === "manager") { // ❌ Fixed extra closing parenthesis
+          resBlogs = await blogApiRequest.fetchBlogByManager(data, sessionToken);
+        }
+
         if (resBlogs) {
           const { total, posts: fetchedBlogs } = resBlogs.payload;
           setBlogs(fetchedBlogs);
           setTotalPages(Math.ceil(total / perPage));
         }
       } catch (error: any) {
-        toast.error(
-          "An error occurred while fetching categories. Please try again."
-        );
+        console.error("Error fetching blogs:", error);
+        toast.error("An error occurred while fetching categories. Please try again.");
       }
     };
 
     fetchBlogs();
-  }, [page]);
-
+  }, [page, rule]); // ✅ Added rule to dependencies
 
   const columns = [
     {
@@ -68,7 +75,9 @@ export default function BlogTable() {
       accessorKey: "categories",
       header: "Danh mục",
       cell: ({ row }: any) =>
-        row.original.categories[0]?.name ? row.original.categories[0].name : "Không có",
+        row.original.categories[0]?.name
+          ? row.original.categories[0].name
+          : "Không có",
     },
     { accessorKey: "slug", header: "Đường dẫn" },
     {
@@ -116,7 +125,10 @@ export default function BlogTable() {
                   key={header.id}
                   className="border border-gray-300 px-4 py-2"
                 >
-                  {flexRender(header.column.columnDef.header, header.getContext())}
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
                 </th>
               ))}
             </tr>
@@ -134,7 +146,11 @@ export default function BlogTable() {
           ))}
         </tbody>
       </table>
-      <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+      />
     </div>
   );
 }

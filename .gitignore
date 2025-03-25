@@ -34,3 +34,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local environment files
+.env
+robots.txt
+
+# Public files you want to ignore
+/public/robots.txt

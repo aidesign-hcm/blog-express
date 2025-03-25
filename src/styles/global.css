@@ -261,3 +261,7 @@ background :#fcfaf6
 .placeholderContainer {
   position: relative;
 }
+
+.TiptapEditor_content__ALUid {
+  padding: 0px !important;
+}

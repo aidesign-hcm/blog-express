@@ -102,6 +102,15 @@ const blogApiRequest = {
         },
       }
     ),
+    fetchBlogByManager: (data: object, sessionToken: string) =>
+      http.get<BlogResType>(
+        `api/post/by-manager?page=${data.page}&perPage=${data.perPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${sessionToken}`,
+          },
+        }
+      ),
   fetchBlogBySearch: (data: object) =>
     http.post<BlogResType>(
       `api/post/search?text=${data.query}&page=${data.page}&perPage=${data.perPage}`,
