@@ -25,7 +25,6 @@ export default function BlogTable({ rule }: BlogTableProps) {
   const perPage = 20;
   const [totalPages, setTotalPages] = useState(1);
   useEffect(() => {
-    console.log("Fetching blogs for page:", page, "with rule:", rule);
 
     const fetchBlogs = async () => {
       const data = { page, perPage };
@@ -36,7 +35,7 @@ export default function BlogTable({ rule }: BlogTableProps) {
 
         if (rule === "user") {
           resBlogs = await blogApiRequest.fetchBlogByUser(data, sessionToken);
-        } else if (rule === "manager") { // ❌ Fixed extra closing parenthesis
+        } else if (rule === "manager") { 
           resBlogs = await blogApiRequest.fetchBlogByManager(data, sessionToken);
         }
 
@@ -52,7 +51,7 @@ export default function BlogTable({ rule }: BlogTableProps) {
     };
 
     fetchBlogs();
-  }, [page, rule]); // ✅ Added rule to dependencies
+  }, [page, rule]);
 
   const columns = [
     {
@@ -91,7 +90,12 @@ export default function BlogTable({ rule }: BlogTableProps) {
       cell: ({ row, rowIndex }: any) => {
         const router = useRouter();
         const handleEdit = () => {
-          router.push(`/dashboard/account/blog/${row.original._id}`);
+          if(rule === "user"){
+            router.push(`/dashboard/account/blog/${row.original._id}`);
+          } else if (rule === "manager"){
+            router.push(`/dashboard/manager/blog/${row.original._id}`);
+          }
+          
         };
 
         return (
