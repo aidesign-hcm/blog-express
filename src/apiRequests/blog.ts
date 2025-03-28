@@ -7,8 +7,8 @@ import {
 } from "@/schemaValidations/blog.schema";
 
 const blogApiRequest = {
-  fetchAllBlog: (data: object, sessionToken: string) =>
-    http.post<BlogResType>(`api/post/all`, data, {
+  fetchAllBlog: (data: object, sessionToken: string, feature: string) =>
+    http.post<BlogResType>(`api/post/all?feature=${feature}`, data, {
       headers: {
         Authorization: `Bearer ${sessionToken}`,
       },

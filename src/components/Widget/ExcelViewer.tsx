@@ -14,34 +14,29 @@ const ExcelViewer = ({ fileUrl }: { fileUrl: string }) => {
     const fetchExcel = async () => {
       try {
         setLoading(true);
-
-        // Fetch file as blob (use `no-cors` if needed)
-        const response = await fetch(
-          "http://localhost:8000/uploads/file/1739284499368-data.xlsx",
-          { mode: "cors" }
-        );
+        const response = await fetch(fileUrl, { mode: "cors" });
         if (!response.ok) throw new Error("Failed to fetch file");
-
+    
         const arrayBuffer = await response.arrayBuffer();
+    
         const workbook = XLSX.read(arrayBuffer, { type: "array" });
-
-        // Get first sheet
+    
         const sheetName = workbook.SheetNames[0];
+    
         const worksheet = workbook.Sheets[sheetName];
-
-        // Convert to JSON array
+    
         const jsonData: string[][] = XLSX.utils.sheet_to_json(worksheet, {
-          header: 1, // Get rows as arrays
+          header: 1,
         });
-
+    
         setData(jsonData);
       } catch (error) {
-        console.error("Error loading Excel file:", error);
       } finally {
         setLoading(false);
       }
     };
-
+    
+    
     fetchExcel();
   }, [fileUrl]);
 

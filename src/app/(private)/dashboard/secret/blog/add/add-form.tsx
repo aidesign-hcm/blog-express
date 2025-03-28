@@ -22,6 +22,7 @@ import mediaApiRequest from "@/apiRequests/media";
 import categoryApiRequest from "@/apiRequests/category";
 import TiptapEditor from "@/components/Widget/TiptapEditor";
 import envConfig from "@/config";
+import { useAuth } from "@/hooks/useAuth";
 
 type BlogValues = z.infer<typeof BlogCreate>[0];
 
@@ -31,6 +32,7 @@ type AddFormProps = {
 };
 
 const AddForm = ({ blog, onSubmit }: AddFormProps) => {
+  const { hasPermission } = useAuth();
   const [categories, setCategories] = useState([]);
   const [isCode, setIsCode] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -122,18 +124,17 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
     setUploadingFile(true);
     try {
       const sessionToken = localStorage.getItem("sessionToken") || "";
-      let uploadedFiles: { path: string }[] = [];
+      let uploadedFiles: { path: string }[] = form.getValues("file") || []; // Get existing files
 
       for (const file of files) {
         const data = new FormData();
-        data.append("file", file); // Send one file per request
+        data.append("file", file);
 
         try {
           const result = await mediaApiRequest.postFileMedia(
             data,
             sessionToken
           );
-
           if (result && result.payload.fileUrl) {
             uploadedFiles.push({ path: result.payload.fileUrl });
           }
@@ -145,7 +146,7 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
 
       if (uploadedFiles.length > 0) {
         toast.success("All files uploaded successfully.");
-        form.setValue("file", uploadedFiles); // Store uploaded files
+        form.setValue("file", uploadedFiles);
       }
     } catch (error) {
       console.error("Error uploading files:", error);
@@ -153,6 +154,12 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
     } finally {
       setUploadingFile(false);
     }
+  };
+
+  const removeFile = (index: number) => {
+    const files = form.getValues("file") || [];
+    const updatedFiles = files.filter((_, i) => i !== index);
+    form.setValue("file", updatedFiles);
   };
 
   return (
@@ -202,17 +209,21 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
                 <div role="tablist" className="flex gap-2 my-2">
                   <span
                     role="tab"
-                    className={`tab ${!isCode ? "border rounded-md border-gray-500" : ""}`}
+                    className={`tab ${
+                      !isCode ? "border rounded-md border-gray-500" : ""
+                    }`}
                     onClick={() => setIsCode(false)}
                   >
                     Soạn Thảo Thường
                   </span>
                   <span
                     role="tab"
-                    className={`tab ${isCode ? "border rounded-md border-gray-500" : ""}`}
+                    className={`tab ${
+                      isCode ? "border rounded-md border-gray-500" : ""
+                    }`}
                     onClick={() => setIsCode(true)}
                   >
-                    Soạn HTML {isCode }
+                    Soạn HTML {isCode}
                   </span>
                 </div>
                 {!isCode ? (
@@ -222,21 +233,21 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
                   />
                 ) : (
                   <FormField
-                  control={form.control}
-                  name="desc"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <textarea
-                          {...field}
-                          rows={15}
-                          className="w-full p-2 border border-gray-300 rounded-md"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    control={form.control}
+                    name="desc"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <textarea
+                            {...field}
+                            rows={15}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 )}
               </div>
               <FormField
@@ -299,26 +310,26 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
                 onUploadFeatureImg={onUploadFeatureImg}
                 onDeleteFeatureImg={onDeleteFeatureImg}
               />
-                <FormField
-                  control={form.control}
-                  name="isActive"
-                  render={({ field }) => (
-                    <FormItem className="flex items-center gap-2 mt-4">
-                      <FormControl>
-                        <input
-                          type="checkbox"
-                          checked={field.value} // ✅ Ensure the checkbox state is properly controlled
-                          onChange={field.onChange} // ✅ Handle changes correctly
-                          className="w-5 h-5 border-gray-300 rounded"
-                        />
-                      </FormControl>
-                      <FormLabel className="cursor-pointer">
-                        Kích hoạt bài viết
-                      </FormLabel>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <FormField
+                control={form.control}
+                name="isActive"
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-2 mt-4">
+                    <FormControl>
+                      <input
+                        type="checkbox"
+                        checked={field.value} // ✅ Ensure the checkbox state is properly controlled
+                        onChange={field.onChange} // ✅ Handle changes correctly
+                        className="w-5 h-5 border-gray-300 rounded"
+                      />
+                    </FormControl>
+                    <FormLabel className="cursor-pointer">
+                      Kích hoạt bài viết
+                    </FormLabel>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="isFeature"
@@ -327,8 +338,8 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
                     <FormControl>
                       <input
                         type="checkbox"
-                        checked={field.value ?? false} 
-                        onChange={(e) => field.onChange(e.target.checked)} 
+                        checked={field.value ?? false}
+                        onChange={(e) => field.onChange(e.target.checked)}
                         className="w-5 h-5 border-gray-300 rounded"
                       />
                     </FormControl>
@@ -350,11 +361,11 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
                       <FormControl>
                         <input
                           type="file"
-                          multiple // ✅ Allow multiple file selection
+                          multiple
                           accept=".pdf,.xlsx,.xls,.txt,.doc,.docx,.pptx,.rar,.zip"
                           onChange={(e) => {
                             if (e.target.files?.length) {
-                              onUploadFiles(Array.from(e.target.files)); // ✅ Handle multiple files
+                              onUploadFiles(Array.from(e.target.files));
                             }
                           }}
                         />
@@ -364,20 +375,37 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
 
                       {field.value?.length > 0 && (
                         <div className="mt-2">
-                          <p>Uploaded files:</p>
-                          <ul className="list-disc ml-4">
+                          <p>File đã được đăng:</p>
+                          <ul className="list-disc">
                             {field.value.map(
-                              (file: { path: string }, index: number) => (
-                                <li key={index}>
-                                  <a
-                                    href={`${envConfig.NEXT_PUBLIC_API_ENDPOINT}${file.path}`}
-                                    target="_blank"
-                                    className="text-blue-500"
+                              (file: { path: string }, index: number) => {
+                                const fileName = file.path.split("/").pop(); // Extract file name from path
+
+                                return (
+                                  <li
+                                    key={index}
+                                    className="flex items-center gap-2"
                                   >
-                                    Xem File {index + 1}
-                                  </a>
-                                </li>
-                              )
+                                    <a
+                                      href={`${envConfig.NEXT_PUBLIC_API_ENDPOINT}${file.path}`}
+                                      target="_blank"
+                                      className="text-blue-500 truncate max-w-[200px] inline-block"
+                                      title={fileName} // Show full name on hover
+                                    >
+                                      {fileName}
+                                    </a>
+                                    {hasPermission("admin") && (
+                                      <button
+                                        type="button"
+                                        className="text-red-500"
+                                        onClick={() => removeFile(index)}
+                                      >
+                                        Xóa
+                                      </button>
+                                    )}
+                                  </li>
+                                );
+                              }
                             )}
                           </ul>
                         </div>

@@ -16,6 +16,7 @@ export default function Logout() {
       href: "/dashboard/secret/blog",
       children: [
         { title: "Tin Tức", href: "/dashboard/secret/blog" },
+        { title: "Tin Nổi Bật", href: "/dashboard/secret/blog/feature" },
         { title: "Thêm Tin Tức", href: "/dashboard/secret/blog/add" },
       ],
     },

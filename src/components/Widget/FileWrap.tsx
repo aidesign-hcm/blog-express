@@ -41,8 +41,10 @@ const FileWrap = ({ blog }) => {
                 style={{ overflow: "auto" }}
               ></iframe>
             ) : (
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-700">File Name: {fileName}</span>
+              ""
+            )}
+            <div className="flex items-center justify-between mt-4 border p-4 rounded bg-white">
+                <span className="text-sm text-gray-700">File Đính kèm</span>
                 <a
                   href={fileUrl}
                   download
@@ -51,7 +53,6 @@ const FileWrap = ({ blog }) => {
                   Download File
                 </a>
               </div>
-            )}
           </div>
         );
       })}

@@ -119,26 +119,46 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
 
   const [uploadingFile, setUploadingFile] = useState(false);
 
-  const onUploadFile = async (file: File) => {
+  const onUploadFiles = async (files: FileList | File[]) => {
     setUploadingFile(true);
     try {
-      const data = new FormData();
-      data.append("file", file);
       const sessionToken = localStorage.getItem("sessionToken") || "";
-      const result = await mediaApiRequest.postFileMedia(data, sessionToken);
-      if (result) {
-        console.log(result);
-        toast.success("File uploaded successfully.");
-        form.setValue("file", { path: result.payload.fileUrl });
-      } else {
-        toast.error("File upload failed. Please try again.");
+      let uploadedFiles: { path: string }[] = form.getValues("file") || []; // Get existing files
+
+      for (const file of files) {
+        const data = new FormData();
+        data.append("file", file);
+
+        try {
+          const result = await mediaApiRequest.postFileMedia(
+            data,
+            sessionToken
+          );
+          if (result && result.payload.fileUrl) {
+            uploadedFiles.push({ path: result.payload.fileUrl });
+          }
+        } catch (err) {
+          console.error(`Error uploading file ${file.name}:`, err);
+          toast.error(`Failed to upload ${file.name}`);
+        }
+      }
+
+      if (uploadedFiles.length > 0) {
+        toast.success("All files uploaded successfully.");
+        form.setValue("file", uploadedFiles);
       }
     } catch (error) {
-      console.error("Error uploading file:", error);
+      console.error("Error uploading files:", error);
       toast.error("An error occurred. Please try again.");
     } finally {
       setUploadingFile(false);
     }
+  };
+
+  const removeFile = (index: number) => {
+    const files = form.getValues("file") || [];
+    const updatedFiles = files.filter((_, i) => i !== index);
+    form.setValue("file", updatedFiles);
   };
 
   return (
@@ -188,17 +208,21 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
                 <div role="tablist" className="flex gap-2 my-2">
                   <span
                     role="tab"
-                    className={`tab ${!isCode ? "border rounded-md border-gray-500" : ""}`}
+                    className={`tab ${
+                      !isCode ? "border rounded-md border-gray-500" : ""
+                    }`}
                     onClick={() => setIsCode(false)}
                   >
                     Soạn Thảo Thường
                   </span>
                   <span
                     role="tab"
-                    className={`tab ${isCode ? "border rounded-md border-gray-500" : ""}`}
+                    className={`tab ${
+                      isCode ? "border rounded-md border-gray-500" : ""
+                    }`}
                     onClick={() => setIsCode(true)}
                   >
-                    Soạn HTML {isCode }
+                    Soạn HTML {isCode}
                   </span>
                 </div>
                 {!isCode ? (
@@ -208,21 +232,21 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
                   />
                 ) : (
                   <FormField
-                  control={form.control}
-                  name="desc"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <textarea
-                          {...field}
-                          rows={15}
-                          className="w-full p-2 border border-gray-300 rounded-md"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    control={form.control}
+                    name="desc"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <textarea
+                            {...field}
+                            rows={15}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 )}
               </div>
               <FormField
@@ -284,6 +308,7 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
                 onUploadFeatureImg={onUploadFeatureImg}
                 onDeleteFeatureImg={onDeleteFeatureImg}
               />
+
               <div className="border p-4 rounded">
                 <span className="block mb-2">Đăng File</span>
                 <FormField
@@ -294,29 +319,54 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
                       <FormControl>
                         <input
                           type="file"
+                          multiple
                           accept=".pdf,.xlsx,.xls,.txt,.doc,.docx,.pptx,.rar,.zip"
                           onChange={(e) => {
-                            if (e.target.files?.[0]) {
-                              onUploadFile(e.target.files[0]);
+                            if (e.target.files?.length) {
+                              onUploadFiles(Array.from(e.target.files));
                             }
                           }}
                         />
                       </FormControl>
+
                       {uploadingFile && <p>Uploading...</p>}
-                      {field.value?.path && (
+
+                      {field.value?.length > 0 && (
                         <div className="mt-2">
-                          <p>
-                            Uploaded file:{" "}
-                            <a
-                              href={`${envConfig.NEXT_PUBLIC_API_ENDPOINT}${field.value.path}`}
-                              target="_blank"
-                              className="text-blue-500"
-                            >
-                              Xem File
-                            </a>
-                          </p>
+                          <p>File đã được đăng:</p>
+                          <ul className="list-disc">
+                            {field.value.map(
+                              (file: { path: string }, index: number) => {
+                                const fileName = file.path.split("/").pop(); // Extract file name from path
+
+                                return (
+                                  <li
+                                    key={index}
+                                    className="flex items-center gap-2"
+                                  >
+                                    <a
+                                      href={`${envConfig.NEXT_PUBLIC_API_ENDPOINT}${file.path}`}
+                                      target="_blank"
+                                      className="text-blue-500 truncate max-w-[200px] inline-block"
+                                      title={fileName} // Show full name on hover
+                                    >
+                                      {fileName}
+                                    </a>
+                                    <button
+                                      type="button"
+                                      className="text-red-500"
+                                      onClick={() => removeFile(index)}
+                                    >
+                                      Xóa
+                                    </button>
+                                  </li>
+                                );
+                              }
+                            )}
+                          </ul>
                         </div>
                       )}
+
                       <FormMessage />
                     </FormItem>
                   )}

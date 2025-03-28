@@ -2,7 +2,7 @@ import BlogTable from '@/components/Table/Blog';
 import { Suspense } from "react";
 
 export default function BlogPage() {
-  const feature = ""
+   const feature = "feature"
   return (
     <div className="content">
       <h1 className="text-2xl mb-4">Trang bài viết</h1>

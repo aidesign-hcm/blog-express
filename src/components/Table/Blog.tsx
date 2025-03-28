@@ -8,15 +8,15 @@ import {
 import blogApiRequest from "@/apiRequests/blog";
 import { toast } from "react-toastify";
 import envConfig from "@/config";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams  } from "next/navigation";
 import Pagination from "@/components/widget/Pagination";
 import { BlogCreateType, BlogCreate } from "@/schemaValidations/blog.schema"; // Import the schema
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import SearchNormal from "@/components/Navigation/SearchSecret";
 
 
-export default function BlogTable() {
+
+export default function BlogTable({ feature }: { feature: string }) {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [blogs, setBlogs] = useState([]);
   const [page, setPage] = useState(1);
@@ -29,17 +29,22 @@ export default function BlogTable() {
 
   const perPage = 20;
   const [totalPages, setTotalPages] = useState(1);
-  useEffect(() => {
-    fetchBlogs();
-  }, [page, userParam, searchQuery]);
-  
+
+
+  const categorySlug = searchParams.get("cat") || null; 
+
+
   const fetchBlogs = async () => {
     const data: any = { page, perPage };
     if (userParam) data.user = userParam;
     if (searchQuery) data.q = searchQuery;
+    if (categorySlug) {
+      data.category = categorySlug; // Only include if it exists
+    }
+
     try {
       const sessionToken = localStorage.getItem("sessionToken") || "";
-      const resBlogs = await blogApiRequest.fetchAllBlog(data, sessionToken);
+      const resBlogs = await blogApiRequest.fetchAllBlog(data, sessionToken, feature);
       if (resBlogs) {
         const { total, posts: fetchedBlogs } = resBlogs.payload;
         setBlogs(fetchedBlogs);
@@ -52,6 +57,10 @@ export default function BlogTable() {
       );
     }
   };
+
+  useEffect(() => {
+    fetchBlogs();
+  }, [page, userParam, searchQuery, categorySlug]);
 
   // Table columns
   const handleDelete = async (data: BlogCreateType, index: number) => {
@@ -133,6 +142,36 @@ export default function BlogTable() {
         />
       ),
     },
+    {
+      accessorKey: "isActive",
+      header: "TT",
+      cell: ({ row }: any) => {
+        const status = row.original.isActive;
+        let tooltip = "Chưa duyệt";
+        let dotColor = "bg-gray-400"; // Default color for "Chưa duyệt"
+    
+        if (status === true) {
+          tooltip = "Công khai";
+          dotColor = "bg-green-500"; // Green for "Công khai"
+        } else if (status === false) {
+          tooltip = "Đang khóa";
+          dotColor = "bg-gray-500"; // Gray for "Đang khóa"
+        }
+    
+        return (
+          <div className="tooltip" data-tip={tooltip}>
+            <span className={`w-3 h-3 rounded-full ${dotColor} block`}></span>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "index",
+      header: "",
+      cell: ({ row }: any) => (
+        <span className="text-small text-gray-600">{row.original.index}</span>
+      ),
+    },
 
     {
       accessorKey: "featureImg",
@@ -156,26 +195,29 @@ export default function BlogTable() {
         <span className="line-clamp-1">{row.original.title}</span>
       ),
     },
-
-    {
-      accessorKey: "isActive",
-      header: "TT",
-      cell: ({ row }: any) => {
-        const status = row.original.isActive;
-        if (status === true) return "Công khai";
-        if (status === false) return "Đang khóa";
-        return "Chưa duyệt";
-      },
-    },
-
     {
       accessorKey: "categories",
       header: "DM",
-      cell: ({ row }: any) =>
-        row.original.categories[0]?.name
-          ? row.original.categories[0].name
-          : "Không có",
-    },
+      cell: ({ row }: any) => {
+        const categories = row.original.categories;
+    
+        return categories.length > 0 ? (
+          <div className="flex flex-wrap gap-1">
+            {categories.map((category: { name: string; slug: string }, index: number) => (
+              <a
+                key={index}
+                href={`/dashboard/secret/blog?cat=${category.slug}`}
+                className="badge bg-gray-200 text-gray-700 text-xs hover:bg-gray-300 transition"
+              >
+                {category.name}
+              </a>
+            ))}
+          </div>
+        ) : (
+          <span className="text-gray-500 text-xs">Không có</span>
+        );
+      },
+    },      
     {
       accessorKey: "user",
       header: "Thành Viên",
@@ -184,7 +226,7 @@ export default function BlogTable() {
         return user ? (
           <Link
             href={`/dashboard/secret/user/${user._id}`} // Adjust URL based on your routing
-            className="text-blue-500 hover:underline"
+            className="text-blue-500 hover:underline text-xs px-1 rounded border"
           >
             {user.username}
           </Link>
