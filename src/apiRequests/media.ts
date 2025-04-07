@@ -15,13 +15,18 @@ const mediaApiRequest = {
         Authorization: `Bearer ${sessionToken}`,
       },
     }),
-    postFileMedia: (data: object, sessionToken: string) =>
-      http.post<MediaResType>(`api/media/file`, data, {
+  postFileMedia: (data: object, sessionToken: string) =>
+    http.post<MediaResType>(`api/media/file`, data, {
+      headers: {
+        Authorization: `Bearer ${sessionToken}`,
+      },
+    }),
+    postVideo: (data: object, sessionToken: string ) =>
+      http.post<MediaResType>(`api/video/upload`, data, {
         headers: {
           Authorization: `Bearer ${sessionToken}`,
         },
       }),
-    
 };
 
 export default mediaApiRequest;

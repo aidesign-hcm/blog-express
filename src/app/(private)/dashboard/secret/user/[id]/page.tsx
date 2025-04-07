@@ -75,7 +75,7 @@ export default function EditUser({ params }: { params: { id: any } }) {
       }
     } catch (error) {
       console.error("Unexpected error:", error);
-      toast.error("An error occurred during update. Please try again.");
+      toast.error(error.payload.message);
     }
   };
 
