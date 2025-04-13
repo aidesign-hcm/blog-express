@@ -35,10 +35,9 @@ const NewsOne: React.FC<NewsOneProps> = ({ blogs }) => {
           <div key={item._id || `news-${index}`} className={`${colSpan} ${rowSpan}`}>
             <div className="single-post-thumbnail col-span-3 mb-2">
               <Link href={"blog/" + item.slug}>
-                <RenderImage img_url={item.featureImg.path} title={item.title} />
+                <RenderImage img_url={item.featureImg.path} title={item.title} categories={item.categories} />
               </Link>
             </div>
-
             <div className="box-text col-span-2">
               <Link href={"blog/" + item.slug} className="text-md font-semibold line-clamp-2">
                 {item.title}

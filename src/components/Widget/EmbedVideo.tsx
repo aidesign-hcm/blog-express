@@ -49,7 +49,7 @@ export const Video = Node.create({
   renderHTML({ HTMLAttributes }) {
     return [
       'video',
-      { controls: 'true', style: 'width: 100%', ...HTMLAttributes },
+      { class: 'video-player' , style: 'width: 100%', ...HTMLAttributes },
       ['source', HTMLAttributes]
     ]
   },

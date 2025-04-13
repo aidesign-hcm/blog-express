@@ -10,7 +10,10 @@ import Breadcrumbs from "@/components/Navigation/Breadcrumbs";
 
 import BlogMeta from "@/components/Navigation/BlogMeta";
 import Ads from "@/components/Ads";
-import ExcelViewer from "@/components/Widget/ExcelViewer";
+import dynamic from "next/dynamic";
+const ContentWrap = dynamic(() => import("@/components/Widget/ContentWrap"), {
+  ssr: false, // ⛔ Disable server-side rendering
+});
 
 export async function generateMetadata({
   params,
@@ -68,7 +71,6 @@ export async function generateMetadata({
 }
 
 export default async function Blog({ params }: { params: { slug: string } }) {
-   
   const slug = params.slug;
   try {
     const resPost = await blogApiRequest.fetchBlogBySlug(slug);
@@ -87,7 +89,7 @@ export default async function Blog({ params }: { params: { slug: string } }) {
                     <div className="content-wrap mb-4">
                       <div className="relative">
                         <div className="max-w-3xl mx-auto">
-                        <Breadcrumbs categories={blog.categories} />
+                          <Breadcrumbs categories={blog.categories} />
                           <div className="flex relative">
                             <div className="hidden md:block mr-4">
                               <PostShare />
@@ -100,15 +102,14 @@ export default async function Blog({ params }: { params: { slug: string } }) {
                                 <div className="md:hidden block">
                                   <PostShare />
                                 </div>
-                                <BlogMeta createdAt={blog.createdAt} authorUsername={blog.user.username} />
+                                <BlogMeta
+                                  createdAt={blog.createdAt}
+                                  authorUsername={blog.user.username}
+                                />
                                 <div className="content-wrapper overflow-x-hidden">
-                                  <div
-                                    dangerouslySetInnerHTML={{
-                                      __html: blog.desc,
-                                    }}
-                                  />
+                                  <ContentWrap html={blog.desc}  video={blog.video} />
                                 </div>
-                               
+
                                 <FileWrap blog={blog} />
                               </div>
                             </div>
@@ -123,7 +124,7 @@ export default async function Blog({ params }: { params: { slug: string } }) {
               </div>
               <div className="sidebar col-span-1">
                 <div className="sticky top-12">
-                <Ads />
+                  <Ads />
                   <h2 className="font-semibold text-lg">Tin Mới mới</h2>
                   {newBlogs.length > 0 && <NewsEight blogs={newBlogs} />}
                 </div>

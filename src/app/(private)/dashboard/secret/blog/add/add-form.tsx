@@ -23,7 +23,7 @@ import categoryApiRequest from "@/apiRequests/category";
 import TiptapEditor from "@/components/Widget/TiptapEditor";
 import envConfig from "@/config";
 import { useAuth } from "@/hooks/useAuth";
-
+import VideoUploader from "@/components/Form/UploadViddeo";
 
 type BlogValues = z.infer<typeof BlogCreate>[0];
 
@@ -56,6 +56,7 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
       categories: [],
       file: [],
       isFeature: false,
+      video: null,
     },
   });
 
@@ -417,9 +418,20 @@ const AddForm = ({ blog, onSubmit }: AddFormProps) => {
                   )}
                 />
               </div>
-              
-            
 
+              <div className="mb-4">
+                <VideoUploader onUrlChange={(url) => setValue("video", url)} />
+                  {watch("video") && (
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium mb-1">Uploaded Video URL:</label>
+                      <input
+                        type="text"
+                        className="w-full px-3 py-2 border rounded"
+                        value={watch("video")}
+                      />
+                    </div>
+                  )}          
+              </div>
               <FormField
                 control={form.control}
                 name="index"

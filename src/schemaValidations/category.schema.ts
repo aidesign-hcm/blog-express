@@ -20,6 +20,8 @@ export const CategoryRes = z.array(
         _id: z.string(),
       })
     ),
+    block: z.number(),
+    iconImg: z.string(),
   })
 );
 
@@ -46,6 +48,8 @@ export const CategoryCreate = z.array(
         _id: z.string(),
       })
     ),
+    block: z.number(),
+    iconImg: z.string(),
   })
 );
 

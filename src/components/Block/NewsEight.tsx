@@ -4,6 +4,25 @@ import RenderImage from "@/components/Widget/renderImage";
 import Link from "next/link";
 import envConfig from "@/config";
 
+type Blog = {
+  _id: string;
+  slug: string;
+  title: string;
+  short?: string;
+  featureImg?: { path: string };
+  categories?: any[]; // Update this if you have a specific shape for categories
+};
+
+type Category = {
+  slug: string;
+  name: string;
+};
+
+interface NewsFourProps {
+  blogs: Blog[];
+  category?: Category; // Optional
+}
+
 const NewsEight = ({ blogs = [] }) => {
   return (
     <div className="grid grid-cols-1 gap-4">
@@ -19,6 +38,7 @@ const NewsEight = ({ blogs = [] }) => {
                   <RenderImage
                     img_url={item.featureImg?.path}
                     title={item.title}
+                    categories={item.categories}
                   />
                 </Link>
               </div>

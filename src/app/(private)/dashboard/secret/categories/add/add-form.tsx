@@ -51,7 +51,8 @@ const AddForm = ({ category, onSubmit }: AddFormProps) => {
       isDefault: false,
       parent: null,
       ancestors: [],
-      
+      block: 0,
+      iconImg: ""
     },
   });
   useEffect(() => {
@@ -115,12 +116,39 @@ const AddForm = ({ category, onSubmit }: AddFormProps) => {
       setLoading(false);
     }
   };
+  const onUploadIconImg = async (imageFile: File) => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      const data = new FormData();
+      data.append("imageFile", imageFile);
+      const sessionToken = localStorage.getItem("sessionToken") || "";
+      const result = await mediaApiRequest.postLogo(data, sessionToken);
+      if (result) {
+        toast.success(
+          "Đăng hình ảnh thành công."
+        );
+        setTimeout(() => {
+          form.setValue("iconImg", result.payload.featureImg.path);
+        }, 3000);
+      }
+    } catch (error: any) {
+      toast.error(
+        "An error occurred during update your profile. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
   const onDeleteFeatureImg = () => {
     form.setValue("featureImg", {
       path: "",
       folder: "",
       _id: "",
     });
+  };
+  const onDeleteIconImg = () => {
+    form.setValue("iconImg", '');
   };
   
 
@@ -191,6 +219,12 @@ const AddForm = ({ category, onSubmit }: AddFormProps) => {
             onUploadFeatureImg={onUploadFeatureImg}
             onDeleteFeatureImg={onDeleteFeatureImg}
           />
+           <span className="block mb-2">Icon Ảnh thumb</span>
+          <FileUpload
+            serverImageUrl={category?.iconImg}
+            onUploadFeatureImg={onUploadIconImg}
+            onDeleteFeatureImg={onDeleteIconImg}
+          />
           <FormField
             control={form.control}
             name="parent"
@@ -260,6 +294,24 @@ const AddForm = ({ category, onSubmit }: AddFormProps) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Index</FormLabel>
+                  <FormControl>
+                    <input
+                      className="input input-bordered w-full rounded-md"
+                      type="number"
+                      value={field.value} // Bind the field's value
+                      onChange={(e) => field.onChange(Number(e.target.value))} // Convert value to a number
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="block"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Số Block</FormLabel>
                   <FormControl>
                     <input
                       className="input input-bordered w-full rounded-md"

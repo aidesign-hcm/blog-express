@@ -35,8 +35,6 @@ export default function VideoUploader({ onUrlChange }: VideoUploaderProps) {
         sessionToken
       );
 
-   
-
       // Generate the video URL
       const baseUrl = envConfig?.NEXT_PUBLIC_API_ENDPOINT || "";
       const videoUrl = baseUrl + "/api/video/stream/" + response.payload.videoId;

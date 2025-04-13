@@ -22,6 +22,7 @@ export const BlogCreate = z.array(
       )
       .min(1, { message: "Please select at least one category" }),
     file: z.any(),
+    video: z.any()
   })
 );
 
@@ -38,13 +39,15 @@ export const BlogUserCreate = z.array(
     slug: z.string().trim().min(2).max(256),
     desc: z.string(),
     short: z.string(),
+    file: z.any(),
+    video: z.any(),
     categories: z
       .array(
         z.string() // categories is now an array of strings (category IDs)
       )
       .min(1, { message: "Please select at least one category" }),
-      file: z.any(),
-  })
+  }),
+  
   
 );
 
@@ -67,6 +70,7 @@ const BlogItem = z.object({
   file: z.object({
     path: z.string(),
   }),
+  video: z.string(),
 });
 
 export const BlogRes = z.object({
