@@ -33,7 +33,7 @@ export default async function Home() {
                   <Ads />
                 </div>
               </div>
-      <div className="grid auto-rows-auto grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 border-t pt-4">
+      <div className="grid auto-rows-auto grid-cols-1 md:grid-cols-3 gap-0 md:gap-8 border-t pt-4">
         {allPostPerCat.map((cat, index) => {
           if (!cat?.posts || !cat.block) return null;
 

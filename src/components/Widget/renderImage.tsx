@@ -44,7 +44,9 @@ const RenderImage: React.FC<RenderImageProps> = ({
           <div className="w-8 h-8 rounded-sm flex items-center justify-center">
             <Image
               src={`${baseUrl}/${categoryIcon}`}
-              alt="Category Icon"
+              alt={
+                imageSrc === "/imagenotavailable.png" ? "Image not available" : title
+              }
               width={20}
               height={20}
               onError={() => setImageSrc("/imagenotavailable.png")}

@@ -6,6 +6,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { ChevronLeft, ChevronRight } from "react-feather";
 import Link from "next/link";
+import CategoryTitle from "@/components/Widget/CategoryTitle";
 
 type Blog = {
   _id: string;
@@ -74,11 +75,7 @@ const NewsSeven: React.FC<NewsFourProps> = ({ blogs, category }) =>  {
       <div className="col-span-3 row-span-1 my-8 bg-gray-100 px-2 relative">
         <div className="menu menu-horizontal gap-4 items-center">
         {category?.slug && (
-        <Link href={`/${category.slug}`}>
-          <h2 className="parent-cate font-semibold text-lg mb-2 border-b border-primary inline-block">
-            {category.name}
-          </h2>
-        </Link>
+        <CategoryTitle category={category} />
       )}
         </div>
         <Slider

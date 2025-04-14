@@ -2,6 +2,7 @@
 import React from "react";
 import RenderImage from "@/components/Widget/renderImage";
 import Link from "next/link";
+import CategoryTitle from "@/components/Widget/CategoryTitle";
 
 type Blog = {
   _id: string;
@@ -25,12 +26,8 @@ interface NewsFourProps {
 const NewsFour: React.FC<NewsFourProps> = ({ blogs, category }) => {
   return (
     <div className="col-span-1 row-span-2 border-l-0 md:border-r pr-4">
-      {category?.slug && (
-        <Link href={`/${category.slug}`}>
-          <h2 className="parent-cate font-semibold text-lg mb-2 border-b border-primary inline-block">
-            {category.name}
-          </h2>
-        </Link>
+   {category?.slug && (
+        <CategoryTitle category={category} />
       )}
 
       <div className="grid grid-cols-1 gap-4">
