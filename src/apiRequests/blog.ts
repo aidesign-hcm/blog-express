@@ -8,7 +8,8 @@ import {
 
 const blogApiRequest = {
   fetchAllBlog: (data: object, sessionToken: string, feature: string) =>
-    http.post<BlogResType>(`api/post/all?feature=${feature}`, data, {
+    http.post<BlogResType>(`api/post/all?feature=${feature}`, data,  {
+      cache: 'no-store',
       headers: {
         Authorization: `Bearer ${sessionToken}`,
       },

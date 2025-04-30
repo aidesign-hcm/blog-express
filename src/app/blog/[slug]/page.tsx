@@ -12,7 +12,7 @@ import BlogMeta from "@/components/Navigation/BlogMeta";
 import Ads from "@/components/Ads";
 import dynamic from "next/dynamic";
 const ContentWrap = dynamic(() => import("@/components/Widget/ContentWrap"), {
-  ssr: false, // ⛔ Disable server-side rendering
+  ssr: false, 
 });
 
 export async function generateMetadata({

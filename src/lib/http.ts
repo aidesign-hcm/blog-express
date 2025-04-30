@@ -177,13 +177,17 @@ const request = async <Response>(
   if (isClient()) {
     if (
       [
+        "api/auth/verify-app-code",
+        "api/auth/verify-code",
         "api/auth/login",
         // "api/auth/signup",
         "auth",
+        
         // "wp-json/jwt-auth/v1/google_login",
       ].some((item) => item === normalizePath(url))
     ) {
       const { token } = payload as LoginResType;
+     
       localStorage.setItem("sessionToken", token);
     } else if ("auth/logout" === normalizePath(url)) {
       localStorage.removeItem("user");

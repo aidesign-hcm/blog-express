@@ -72,3 +72,23 @@ export const SlideSessionRes = RegisterRes;
 
 export type SlideSessionResType = z.TypeOf<typeof SlideSessionRes>;
 
+
+
+export const AuthBody = z
+  .object({
+    code: z.string().min(6),
+    userId : z.string(),
+    deviceId: z.string()
+  })
+  .strict();
+
+export type AuthBodyType = z.TypeOf<typeof AuthBody>;
+
+
+export const AuthResBody = z
+  .object({
+    userId: z.string(),
+  })
+  .strict();
+
+export type  AuthResBodyType = z.TypeOf<typeof  AuthResBody>;

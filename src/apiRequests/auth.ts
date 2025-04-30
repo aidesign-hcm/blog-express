@@ -7,7 +7,9 @@ import {
   RegisterResType,
   SlideSessionResType,
   forGotBodyType,
-  ChangePassBodyType
+  ChangePassBodyType,
+  AuthResBodyType,
+  AuthBodyType
 } from '@/schemaValidations/auth.schema'
 import { MessageResType } from '@/schemaValidations/common.schema'
 
@@ -24,6 +26,12 @@ const authApiRequest = {
     http.post(`/api/auth`, body, {
       baseUrl: ''
   }),
+  checkCode: (codeId: string) =>
+    http.get<AuthResBodyType>(`/api/auth/check-code/${codeId}`),
+  VerifyAppCode: (body: AuthBodyType) => 
+    http.post<LoginResType>(`/api/auth/verify-app-code`, body),
+  VerifyCode: (body: AuthBodyType) => 
+    http.post<LoginResType>(`/api/auth/verify-code`, body),
   logoutFromNextServerToServer: (body: {sessionToken: string }) =>
     http.post<MessageResType>(
       '/api/auth/blacklist-token/', body,  {

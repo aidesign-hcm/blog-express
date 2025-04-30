@@ -34,7 +34,7 @@ const LoginForm = () => {
     defaultValues: {
       email: "",
       password: "",
-      deviceId: ""
+      deviceId: "",
     },
   });
   async function onSubmit(values: LoginBodyType) {
@@ -51,16 +51,26 @@ const LoginForm = () => {
     try {
       const result = await authApiRequest.login({ ...values, deviceId }); // Include deviceId
       if (result) {
-        await authApiRequest.auth({
-          sessionToken: result.payload.token,
-          expiresAt: result.payload.expiresAt,
-          user: result.payload.user,
-        });
-        toast.success("Đăng nhập thành công!");
-        setCaptchaValue(null); // Reset reCAPTCHA
-        setUser(result.payload.user);
-        router.push("/dashboard");
-        router.refresh();
+        if(result.payload.isTwoAuthApp){
+          router.push(`/2fa?id=${result.payload.codeId}`);
+          setCaptchaValue(null); 
+        }
+        else if (result.payload.isTwoAuth) {
+          router.push(`/verify?id=${result.payload.codeId}`);
+          setCaptchaValue(null); 
+        } 
+        else {
+          await authApiRequest.auth({
+            sessionToken: result.payload.token,
+            expiresAt: result.payload.expiresAt,
+            user: result.payload.user,
+          });
+          toast.success("Đăng nhập thành công!");
+          setCaptchaValue(null); // Reset reCAPTCHA
+          setUser(result.payload.user);
+          router.push("/dashboard");
+          router.refresh();
+        }
       }
     } catch (error: any) {
       // setUser(null);
@@ -123,9 +133,9 @@ const LoginForm = () => {
                 <div className="mt-2 text-red-500 text-sm font-medium">
                   {errorMessage}
                 </div>
-                <ReCAPTCHA 
-                   sitekey="6LeIch0UAAAAAM_8PR3aphkM7LtCK-5SBn6RZBlV"
-                  onChange={(value) => setCaptchaValue(value)} 
+                <ReCAPTCHA
+                  sitekey="6LeIch0UAAAAAM_8PR3aphkM7LtCK-5SBn6RZBlV"
+                  onChange={(value) => setCaptchaValue(value)}
                 />
                 <button
                   disabled={loading ? true : false}

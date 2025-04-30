@@ -9,6 +9,7 @@ import {
   MenuRes,
   MenuMainRes,
 } from "@/schemaValidations/common.schema";
+import pageApiRequest from "@/apiRequests/page";
 
 interface ListItem extends z.infer<typeof MenuRes> {}
 // Define main structure
@@ -50,7 +51,9 @@ export default function DraggableList({
   }, [getList, getMain]);
   
   const [categories, setCategories] = useState([]);
+  const [pages, setPages] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedPages, setSelectedPages] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
@@ -82,6 +85,24 @@ export default function DraggableList({
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    const fetchPages= async () => {
+      try {
+        const res = await pageApiRequest.fetchAllPages();
+        if (res.payload.success) {
+          setPages(res.payload.pages); // Populate the categories
+        } else {
+          console.error("Failed to fetch categories");
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPages();
+  }, []);
+
   // Handle checkbox selection
   const handleCheckboxChange = (categoryId: string) => {
     setSelectedCategories((prev) =>
@@ -91,11 +112,18 @@ export default function DraggableList({
     );
   };
 
+  const handlePageChange = (pageId: string) => {
+    setSelectedPages((prev) =>
+      prev.includes(pageId)
+        ? prev.filter((id) => id !== pageId)
+        : [...prev, pageId]
+    );
+  };
+
   // Add selected categories to onList
   const addSelectedCategories = () => {
     const maxId =
       onList.length > 0 ? Math.max(...onList.map((item) => item.id)) : -1;
-
     const selectedItems = categories
       .filter((cat) => selectedCategories.includes(cat._id))
       .map((cat, index) => ({
@@ -108,9 +136,28 @@ export default function DraggableList({
         droppable: true,
         parent: 0,
       }));
-
     setOnList((prevList) => [...prevList, ...selectedItems]); // Add at the beginning
-    setSelectedCategories([]); // Reset selection
+    setSelectedCategories([]); 
+  };
+
+
+  const addSelectedPages = () => {
+    const maxId =
+      onList.length > 0 ? Math.max(...onList.map((item) => item.id)) : -1;
+    const selectedItems =  pages
+      .filter((page) => selectedPages.includes(page._id))
+      .map((page, index) => ({
+        _id: page._id, // Keep original _id
+        name: page.title,
+        text: page.title,
+        slug:  'page/' + page.slug,
+        tasks: [],
+        id: maxId + 2 + index, // Assign the next available ID sequentially
+        droppable: true,
+        parent: 0,
+      }));
+    setOnList((prevList) => [...prevList, ...selectedItems]); // Add at the beginning
+    setSelectedPages([]); 
   };
 
   // Handle form input changes
@@ -205,6 +252,30 @@ export default function DraggableList({
               className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
             >
               Thêm danh mục đã chọn
+            </button>
+          </div>
+        </div>
+        <div className="w-full">
+          <div className="mb-4 border p-4 rounded">
+            <h2 className="text-lg font-semibold mb-2">Chọn trang</h2>
+            <div className=" max-h-80 overflow-scroll">
+              {pages.map((page) => (
+                <label key={page._id} className="block mb-2">
+                  <input
+                    type="checkbox"
+                    checked={selectedPages.includes(page._id)}
+                    onChange={() => handlePageChange(page._id)}
+                    className="mr-2"
+                  />
+                  {page.title}
+                </label>
+              ))}
+            </div>
+            <button
+              onClick={addSelectedPages}
+              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              Thêm Trang đã chọn
             </button>
           </div>
         </div>

@@ -38,6 +38,14 @@ export default function Logout() {
       ],
     },
     {
+      title: "Trang",
+      href: "/dashboard/secret/page",
+      children: [
+        { title: "Quản Lý Trang", href: "/dashboard/secret/page" },
+        { title: "Thêm trang", href: "/dashboard/secret/page/add" },
+      ],
+    },
+    {
       title: "Menu",
       href: "/dashboard/secret/menu",
       children: [
